@@ -1,0 +1,9 @@
+art todo
+
+- finish font
+- new cars
+- big wheels (5x5)
+- fix arrow graphics
+- iphone controls
+- pixel car explosions
+- powerup sound / effect

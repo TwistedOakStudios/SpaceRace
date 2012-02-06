@@ -1,0 +1,63 @@
+todo
+
+programming
+- big wheels
+- add new cars
+- HUD
+- character selection
+- fancy fx on critical zone
+- powerup pool should be a stack
+- fix camera bug w/ multiple cars
+- destroy EVERYTHING round end (reload scene?)
+- fix ipad build
+- spacerace font 
+
+tweaks
+- lane change time
+- lane change math function
+- critical status and the loss thereof
+
+done
++ powerup prediction
++ make powerups wider 
++ middle critical point
++ fix drafting bug
++ polish raycast (front and back of car instead of center) for better detection
++ place box colliders on parent speedup gameobjects 
++ iphone controls
++ polish up spacerace coming out of the butt
++ fix car drafting code
++ make wheels move relative to speed of car
++ 3 levels of speedup/slowdown
++ new obstacle gfx
++ animate car wheels
++ make first car diff. color
++ fix lane collision issue
++ explosion audio
++ fix lack of controls after some deaths
++ add a handbrake (/temp speedup?)
++ raycast for cars so you can't move into their lane
++ make everything farther away (smaller)
++ camera follow avg instead of slowest
++ fix lane colors
++ get rid of car color enum
++ fix svn repo
++ turn off powerup manager after round end
++ turn off keyboard controls on spin off death
++ space race coming out of butt on victory
++ powerups should have a (random) leftward moving speed
++ destroy all powerups on round end
++ fix restart bug
++ destroy powerups that reach death zone
++ crater
++ smaller cars / lanes
++ implement powerup system
++ decouple camera controller from control of game
++ make lanes periodically generate powerups
++ scrolling background based on velocity of camera. 
++ sweet car death animation (spin off and explode on sides, big explosion in
+back)
+
+maybe
+- polish brake
+- fix handbrake bug (moving backwards)
