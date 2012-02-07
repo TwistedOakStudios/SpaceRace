@@ -153,8 +153,10 @@ public class Car : MonoBehaviour {
 		}
 	}
 	
+	float timeSinceIncrease=0;
 	// Update is called once per frame
 	void Update () {
+		velocity+=Time.deltaTime*1.5f;
 		if (Static.LevelData.Round.ended) 
 			DriveOffOnVictory();
 			
