@@ -35,6 +35,8 @@ public class PowerupManager : MonoBehaviour {
 		Powerup p = powerup.GetComponent<Powerup>();
 		p.Deploy(Static.LevelData.LaneManager.GetLane(laneIndex));
 		powerups.Add(p);
+		predictor.GetComponent<Predictor>().SetPowerup(powerup);
+		
 	}
 	
 	void RoundStarted(Round r) {
