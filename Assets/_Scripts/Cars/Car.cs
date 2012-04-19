@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 public class Car : MonoBehaviour {
-	static float baseVelocity = 30.0f;
+	static float baseVelocity = 45.0f;
 	static float brakeAmount = 30.0f;
 	static float brakeTime = 0.25f;
 	public float velocity;

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,6 +8,8 @@ public class LaneManager : MonoBehaviour {
     public Transform lanePrefab;
 	public List<Transform> lanes;
 	
+	public Color[] lerpPoints = new Color[]{Color.red, Color.green, Color.blue};
+	
 	void Awake() {
         CreateLanes();
 	}
@@ -17,16 +18,10 @@ public class LaneManager : MonoBehaviour {
         lanes = new List<Transform>(numberOfLanes);
         for (int i = 0; i < numberOfLanes; i++) {
             Transform lane; 
-			if (i == 0) {
-				lane = Instantiate(lanePrefab, new Vector3(0, 0, -15), Quaternion.identity) as Transform;
-				lane.localScale = new Vector3(80.0f, laneDistance, 0.1f);	
-			}
-			else {
 				lane = Instantiate(lanePrefab, new Vector3(0, i * laneDistance, -15), Quaternion.identity) as Transform;
 				lane.localScale = new Vector3(80.0f, laneDistance, 0.1f);
-			}
-			lane.renderer.material.color = new Color(1.0f - i * 0.15f, 0f, 1.0f, 0.75f);
-				
+				lane.renderer.material.color = lerpPoints.GetRangeValue((float)i/(float)numberOfLanes);
+			
 			//lane.GetComponent<Lane>().speedModifier = 1.0f;
             lanes.Add(lane);
         }
@@ -45,6 +40,7 @@ public class LaneManager : MonoBehaviour {
 			return lanes[laneNumber].GetComponent<Lane>();
 		else 
 			return null; 
+			
     }
 }
 
@@ -53,4 +49,17 @@ public partial class LevelData {
 	public LaneManager LaneManager {
 	 	get { return laneManager; }
 	 }
+}
+public static class Helper{
+	public static UnityEngine.Color GetRangeValue(this IList<UnityEngine.Color> range, float n) {
+		float inc = 1.0f/(float)(range.Count-1);
+		float mod = n % inc;		
+		if (mod ==0 ){
+	 		return range[(int)(n/inc)];
+		}
+		var low = (int)(n/(1.0f/(float)(range.Count-1)));
+//		var c = ; var d = range[low];
+		// Color c = Color.magenta - Color.blue;//c-d;
+		return (range[low]+(range[low+1]-range[low])*(mod/inc));	
+	}
 }
