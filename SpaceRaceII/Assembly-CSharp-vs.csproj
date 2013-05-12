@@ -78,6 +78,10 @@
      <Compile Include="Assets\_Scripts\Cars\MobileControl.cs" />
      <Compile Include="Assets\_Scripts\Cars\RayCaster.cs" />
      <Compile Include="Assets\_Scripts\Cars\Wheel.cs" />
+     <Compile Include="Assets\_Scripts\Color\HSBColor.cs" />
+     <Compile Include="Assets\_Scripts\Color\HSBTest.cs" />
+     <Compile Include="Assets\_Scripts\Color\HSLColor.cs" />
+     <Compile Include="Assets\_Scripts\Color\HSLTest.cs" />
      <Compile Include="Assets\_Scripts\Core\Events.cs" />
      <Compile Include="Assets\_Scripts\Core\Static.cs" />
      <Compile Include="Assets\_Scripts\Lanes\CriticalZone.cs" />
