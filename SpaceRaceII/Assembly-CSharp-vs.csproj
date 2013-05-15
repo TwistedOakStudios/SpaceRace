@@ -77,6 +77,8 @@
      <Compile Include="Assets\_Scripts\Cars\KeyboardControl.cs" />
      <Compile Include="Assets\_Scripts\Cars\MobileControl.cs" />
      <Compile Include="Assets\_Scripts\Cars\RayCaster.cs" />
+     <Compile Include="Assets\_Scripts\Cars\Stream.cs" />
+     <Compile Include="Assets\_Scripts\Cars\Streamer.cs" />
      <Compile Include="Assets\_Scripts\Cars\Wheel.cs" />
      <Compile Include="Assets\_Scripts\Color\HSBColor.cs" />
      <Compile Include="Assets\_Scripts\Color\HSBTest.cs" />
@@ -91,6 +93,7 @@
      <Compile Include="Assets\_Scripts\Lanes\LaneRenderer.cs" />
      <Compile Include="Assets\_Scripts\Lanes\MiddleZone.cs" />
      <Compile Include="Assets\_Scripts\Lanes\PowerLane.cs" />
+     <Compile Include="Assets\_Scripts\Levels\Background.cs" />
      <Compile Include="Assets\_Scripts\Levels\LevelData.cs" />
      <Compile Include="Assets\_Scripts\Levels\Round.cs" />
      <Compile Include="Assets\_Scripts\Meters.cs" />
