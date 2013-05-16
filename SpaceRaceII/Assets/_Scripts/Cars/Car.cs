@@ -6,12 +6,13 @@ public class Car : MonoBehaviour {
 	static float brakeAmount = 30.0f;
 	static float brakeTime = 0.25f;
 
-    public bool critical;
     public float velocity;
+    public bool isCritical;
+    public bool isDead;
+    public bool isSwitchingLanes;
 
     public Lane currentLane;
     public int nextLane;
-    public bool isMoving = false;
     public float sideKillTime = 0.5f;
     public float moveTime = 0.0f;
     public float draftBonus = 0.0f;
@@ -33,6 +34,7 @@ public class Car : MonoBehaviour {
     tk2dSprite sprite;
 
     public void Init() {
+        isDead = true;
         control = GetComponent<KeyboardControl>();
         sprite = GetComponent<tk2dSprite>();
         stream = GetComponentInChildren<Stream>();
@@ -53,22 +55,24 @@ public class Car : MonoBehaviour {
         currentLaneIndex = laneIndex;
         currentLane = Static.LevelData.LaneManager.GetLane(laneIndex);
         velocity = startingVelocity;
+        isDead = false;
+        isSwitchingLanes = false;
     }
 
     // Any car entering the middle point means all cars are no longer critical
     void MiddlePointReached(Car car) {
-        critical = false;
+        isCritical = false;
     }
 
     void CriticalPointReached(Car car) {
         if (car == this) {
-            critical = true;
+            isCritical = true;
         }
     }
 
     void CriticalPointExited(Car car) {
         if (car == this) {
-            critical = false;
+            isCritical = false;
         }
     }
 
@@ -86,6 +90,15 @@ public class Car : MonoBehaviour {
         }
 	}
 
+    public void Kill(bool diedInBack) {
+        // TODO: back explosion
+        //if (diedInBack) Instantiate(backParticles, transform.position, Quaternion.identity);
+        //else Instantiate(sideParticles, transform.position, Quaternion.identity);
+        isDead = true;
+        gameObject.SetActiveRecursively(false);
+        Static.Events.OnCarKilled(this);
+    }
+
     void Update() {
         // TODO: decide if we want continual acceleration
         //velocity += Time.deltaTime * 1.5f;
@@ -94,9 +107,9 @@ public class Car : MonoBehaviour {
             velocity += Time.deltaTime * currentLane.relativeVelocity;
         }
 
-        if (Static.LevelData.Round.ended) {
-            DriveOffOnVictory();
-        }
+        //if (Static.LevelData.Round.ended) {
+        //    DriveOffOnVictory();
+        //}
 
         if (draftingBehind) {
             // if the other guy's velocity is greater, you no longer draft. if he slows down you slow down.
@@ -140,15 +153,15 @@ public class Car : MonoBehaviour {
 	}
 	
 	public void MoveUp() {
-		Move(1);
+		SwitchLanes(1);
 	}
 	
 	public void MoveDown() {
-		Move(-1);
+		SwitchLanes(-1);
 	}
 
-	public void Move (int direction) {	
-		if (isMoving) return;
+	public void SwitchLanes(int direction) {	
+		if (isSwitchingLanes) return;
 			
 		if (Static.LevelData.LaneManager.IsValidLane(currentLaneIndex + direction)) {
 			bool canMove = true;
@@ -163,16 +176,6 @@ public class Car : MonoBehaviour {
                 //stream.Drop();
             }
 		}
-		
-	}
-	
-	public void Kill(bool diedInBack) {
-        // TODO: back explosion
-		//if (diedInBack) Instantiate(backParticles, transform.position, Quaternion.identity);
-		//else Instantiate(sideParticles, transform.position, Quaternion.identity);
-		isMoving = false;
-		gameObject.SetActiveRecursively(false);
-		Static.Events.OnCarKilled(this);
 	}
 	
     public void ChangeToLane(int laneIndex) {
@@ -195,12 +198,12 @@ public class Car : MonoBehaviour {
 	}
 	
 	public void HitCrater() {
-        critical = false;
+        isCritical = false;
 		Kill(false);
 	}
 	
 	public IEnumerator Moving(int direction) {
-		isMoving = true;
+		isSwitchingLanes = true;
 		nextLane = currentLaneIndex + direction;
 
         TurnHead(direction);
@@ -225,7 +228,7 @@ public class Car : MonoBehaviour {
 		
 		
         this.ChangeToLane(nextLane);
-		isMoving = false;
+		isSwitchingLanes = false;
 		moveTime=0.0f;
         StartCoroutine(ResetHead());
 		yield break;

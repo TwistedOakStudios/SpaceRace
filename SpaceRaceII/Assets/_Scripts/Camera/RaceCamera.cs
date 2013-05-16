@@ -8,14 +8,12 @@ public class RaceCamera : MonoBehaviour {
 	public float velocity;
 	
 	void LateUpdate () {
-		if (!Static.LevelData.Round.ended) {
-            // If any of the cars are in critical, average only those cars. Otherwise average all cars.
-            bool critical = Static.LevelData.Round.cars.Exists(car => car.critical == true);
-            velocity = (from car in Static.LevelData.Round.cars
-                       where car.critical == critical    
-                       select car.velocity).Average();
-            Static.Events.OnCameraUpdateComplete(this);
-		}
+        // If any of the cars are in critical, average only those cars. Otherwise average all cars.
+        bool critical = Static.LevelData.Round.cars.Exists(car => car.isCritical == true);
+        velocity = (from car in Static.LevelData.Round.cars
+                    where !car.isDead && car.isCritical == critical    
+                    select car.velocity).Average();
+        Static.Events.OnCameraUpdateComplete(this);
 	}
 }
 

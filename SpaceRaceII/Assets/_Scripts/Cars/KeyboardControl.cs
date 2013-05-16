@@ -20,14 +20,16 @@ public class KeyboardControl : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetKeyDown(upKey)) {
-			car.Move(1);
-		} 
-		if (Input.GetKeyDown(downKey)) {
-			car.Move(-1);
-		}
-		if (Input.GetKeyDown(specialKey)) {
-			StartCoroutine(car.Brake()); 
-		}
+        if (!Static.LevelData.Round.ended) {
+            if (Input.GetKeyDown(upKey)) {
+                car.MoveUp();
+            }
+            if (Input.GetKeyDown(downKey)) {
+                car.MoveDown();
+            }
+            if (Input.GetKeyDown(specialKey)) {
+                StartCoroutine(car.Brake());
+            }
+        }
 	}
 }
