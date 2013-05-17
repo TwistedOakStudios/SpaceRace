@@ -252,19 +252,6 @@ public class Car : MonoBehaviour {
         sprite.spriteId = 0;
         yield break;
     }
-	
-	public IEnumerator Brake() {
-		velocity -= brakeAmount;
-		
-		float time = 0.0f;
-		
-		while (time < brakeTime) {
-			time += Time.deltaTime;
-			yield return null;
-		}
-		
-		velocity += brakeAmount;
-	}
 }
 
 public partial class Events {
