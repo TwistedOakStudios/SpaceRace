@@ -31,7 +31,6 @@ public class Round : MonoBehaviour {
 	
 	public void StartRound() {
         for (int i = 0; i < cars.Count; i++) {
-            
             cars[i].Deploy(Static.LevelData.LaneManager.numberOfLanes / 2 - i, startingVelocity);
         }
 

@@ -48,6 +48,7 @@ public class Car : MonoBehaviour {
 
     public void Deploy(int laneIndex, float startingVelocity) {
         gameObject.SetActiveRecursively(true);
+        ResetHead();
         control.enabled = true;
         transform.parent = Static.LevelData.LaneManager.transform;
         Vector3 lp = Static.LevelData.LaneManager.GetLanePos(laneIndex);
@@ -205,7 +206,7 @@ public class Car : MonoBehaviour {
 	public IEnumerator Moving(int direction) {
 		isSwitchingLanes = true;
 		nextLane = currentLaneIndex + direction;
-
+        StopCoroutine("ResetHeadAfterDelay");
         TurnHead(direction);
 		
 		if (draftingBehind) {
@@ -230,11 +231,11 @@ public class Car : MonoBehaviour {
         this.ChangeToLane(nextLane);
 		isSwitchingLanes = false;
 		moveTime=0.0f;
-        StartCoroutine(ResetHead());
+        StartCoroutine("ResetHeadAfterDelay");
 		yield break;
 	}
 
-    void TurnHead(int direction) {
+    private void TurnHead(int direction) {
         if (direction < 0) {
             sprite.spriteId = 2;
         } else {
@@ -242,13 +243,12 @@ public class Car : MonoBehaviour {
         }
     }
 
-    public IEnumerator ResetHead() {
-        float time = 0.0f;
+    private void ResetHead() {
+        sprite.spriteId = 0;
+    }
 
-        while (time < 0.3f) {
-            time += Time.deltaTime;
-            yield return null;
-        }
+    private IEnumerator ResetHeadAfterDelay() {
+        yield return new WaitForSeconds(0.3f);
         sprite.spriteId = 0;
         yield break;
     }
