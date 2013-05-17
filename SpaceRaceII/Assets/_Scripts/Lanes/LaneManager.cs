@@ -29,9 +29,6 @@ public class LaneManager : MonoBehaviour {
             lane.GetComponent<tk2dSprite>().color = hsb.ToColor();
             lane.transform.parent = transform;
             lane.transform.localPosition = new Vector3(0, i * laneDistance, i * zLaneDistance);
-            if (i == 0 || i == 4) {
-                lane.isPower = true;
-            }
             lanes.Add(lane);
         }
 	}

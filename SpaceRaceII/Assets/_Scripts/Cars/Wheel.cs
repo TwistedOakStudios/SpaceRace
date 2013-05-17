@@ -5,7 +5,7 @@ public class Wheel : MonoBehaviour {
 	int i;
 	float time = 0.0f;
 	Car car;
-	float startingSpeed = 1.0f;
+	public float startingVelocity;
     tk2dSprite sprite;
 	
 	void Start() {
@@ -16,7 +16,7 @@ public class Wheel : MonoBehaviour {
 	
 	void LateUpdate () {
 		time += Time.deltaTime;
-		if (time < startingSpeed / car.velocity) return;
+		if (time < startingVelocity / (4*car.velocity)) return;
 		time = 0.0f;
 		
         sprite.spriteId = i;

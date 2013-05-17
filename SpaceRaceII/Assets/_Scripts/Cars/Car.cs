@@ -58,6 +58,9 @@ public class Car : MonoBehaviour {
         velocity = startingVelocity;
         isDead = false;
         isSwitchingLanes = false;
+        foreach (var wheel in GetComponentsInChildren<Wheel>()) {
+            wheel.startingVelocity = startingVelocity;
+        }
     }
 
     // Any car entering the middle point means all cars are no longer critical
@@ -108,10 +111,6 @@ public class Car : MonoBehaviour {
             velocity += Time.deltaTime * currentLane.relativeVelocity;
         }
 
-        //if (Static.LevelData.Round.ended) {
-        //    DriveOffOnVictory();
-        //}
-
         if (draftingBehind) {
             // if the other guy's velocity is greater, you no longer draft. if he slows down you slow down.
             if (draftingBehind.currentLaneIndex != currentLaneIndex) StopDrafting();
@@ -148,11 +147,6 @@ public class Car : MonoBehaviour {
         storedVelocity = 0.0f;
     }
 	
-	void DriveOffOnVictory() {
-		float displacement = velocity  * Time.deltaTime;
-		transform.position += Vector3.right * displacement;
-	}
-	
 	public void MoveUp() {
 		SwitchLanes(1);
 	}
@@ -165,23 +159,48 @@ public class Car : MonoBehaviour {
 		if (isSwitchingLanes) return;
 			
 		if (Static.LevelData.LaneManager.IsValidLane(currentLaneIndex + direction)) {
-			bool canMove = true;
-			foreach (RayCaster r in rayCasters) {
-				if (r.CarInAdjacentLane(direction)) {
-					canMove = false;
-					break;
-				}
-			}
-            if (canMove) {
-                StartCoroutine(Moving(direction));
-                //stream.Drop();
+            foreach (RayCaster r in rayCasters) {
+                if (r.CarInAdjacentLane(direction)) {
+                    return;
+                }
             }
+            StartCoroutine(SwitchingLanes(direction));
 		}
 	}
 	
     public void ChangeToLane(int laneIndex) {
         currentLaneIndex = laneIndex;
         currentLane = Static.LevelData.LaneManager.GetLane(currentLaneIndex);
+    }
+
+    public IEnumerator SwitchingLanes(int direction) {
+        isSwitchingLanes = true;
+        nextLane = currentLaneIndex + direction;
+        StopCoroutine("ResetHeadAfterDelay");
+        TurnHead(direction);
+
+        if (draftingBehind) {
+            draftingBehind = null;
+            velocity = storedVelocity;
+        }
+
+        moveTime = 0.0f;
+        while (moveTime < laneChangeTime) {
+            moveTime += Time.deltaTime;
+            float currentY = Mathf.SmoothStep(Static.LevelData.LaneManager.GetLanePos(currentLaneIndex).y,
+                                              Static.LevelData.LaneManager.GetLanePos(nextLane).y,
+                                              moveTime * (1 / laneChangeTime));
+            float currentZ = Mathf.SmoothStep(Static.LevelData.LaneManager.GetLanePos(currentLaneIndex).z + zLaneOffset,
+                                              Static.LevelData.LaneManager.GetLanePos(nextLane).z + zLaneOffset,
+                                              moveTime * (1 / laneChangeTime));
+            transform.localPosition = new Vector3(transform.localPosition.x, currentY, currentZ);
+            yield return 1;
+        }
+
+        this.ChangeToLane(nextLane);
+        isSwitchingLanes = false;
+        moveTime = 0.0f;
+        StartCoroutine("ResetHeadAfterDelay");
     }
 
 	public IEnumerator AccelerateByVelocityOverTime(float aVelocity, float time) {
@@ -202,38 +221,6 @@ public class Car : MonoBehaviour {
         isCritical = false;
 		Kill(false);
 	}
-	
-	public IEnumerator Moving(int direction) {
-		isSwitchingLanes = true;
-		nextLane = currentLaneIndex + direction;
-        StopCoroutine("ResetHeadAfterDelay");
-        TurnHead(direction);
-		
-		if (draftingBehind) {
-			draftingBehind = null;
-			velocity = storedVelocity;
-		}
-		
-		moveTime = 0.0f;
-		while (moveTime < laneChangeTime) {
-			moveTime += Time.deltaTime;
-			float currentY = Mathf.SmoothStep(Static.LevelData.LaneManager.GetLanePos(currentLaneIndex).y, 
-                                              Static.LevelData.LaneManager.GetLanePos(nextLane).y, 
-                                              moveTime * (1/laneChangeTime));
-            float currentZ = Mathf.SmoothStep(Static.LevelData.LaneManager.GetLanePos(currentLaneIndex).z + zLaneOffset,
-                                              Static.LevelData.LaneManager.GetLanePos(nextLane).z + zLaneOffset,
-                                              moveTime * (1 / laneChangeTime));
-			transform.localPosition = new Vector3(transform.localPosition.x, currentY, currentZ);
-			yield return 1;
-		}
-		
-		
-        this.ChangeToLane(nextLane);
-		isSwitchingLanes = false;
-		moveTime=0.0f;
-        StartCoroutine("ResetHeadAfterDelay");
-		yield break;
-	}
 
     private void TurnHead(int direction) {
         if (direction < 0) {
@@ -248,7 +235,7 @@ public class Car : MonoBehaviour {
     }
 
     private IEnumerator ResetHeadAfterDelay() {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
         sprite.spriteId = 0;
         yield break;
     }

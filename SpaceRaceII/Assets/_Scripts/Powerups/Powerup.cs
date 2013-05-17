@@ -8,14 +8,17 @@ public class Powerup : MonoBehaviour {
 	
 	public void Deploy(Lane aLane) {
 		lane = aLane;
-		Vector3 pos = Static.LevelData.criticalZone.position;
-		transform.position = new Vector3(pos.x, lane.transform.position.y, 1);
         Static.Events.CameraUpdateComplete += Move;
-		Static.Events.OnPowerupDeployed(this);
+		//Static.Events.OnPowerupDeployed(this);
 	}
 
-    public void Move(RaceCamera camera) {
+    public void Destroy(){ 
+        Static.Events.CameraUpdateComplete -= Move;
+        Destroy(gameObject);
+    }
 
+    public void Move(RaceCamera camera) {
+        transform.position -= Vector3.right * camera.velocity * Time.deltaTime;
     }
 	
 	void DeathZoneReached() {
